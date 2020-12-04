@@ -29,8 +29,9 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category })
+          // categories: result.categories,
+          // currentCategory: result.current_category
+         })
         return;
       },
       error: (error) => {
@@ -58,15 +59,18 @@ class QuestionView extends Component {
     return pageNumbers;
   }
 
-  getByCategory= (id) => {
+  getByCategory= (category_id) => {
     $.ajax({
-      url: `http://localhost:3000/categories/${id}/questions`, //TODO: update request URL
+      url: `http://localhost:3000/questions/${category_id}`, //TODO: update request URL
       type: "GET",
       success: (result) => {
         this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          currentCategory: result.current_category })
+          categories: result.categories,
+          totalQuestions: result.total_questions
+          // questions: result.questions,
+          // totalQuestions: result.total_questions,
+          // currentCategory: result.current_category
+         })
         return;
       },
       error: (error) => {
@@ -78,7 +82,7 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `http://localhost:3000/questions`, //TODO: update request URL
+      url: `http://localhost:3000/questions/search`, //TODO: update request URL
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
@@ -91,7 +95,8 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.current_category })
+          // currentCategory: result.current_category 
+        })
         return;
       },
       error: (error) => {

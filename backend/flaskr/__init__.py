@@ -229,23 +229,25 @@ def create_app(test_config=None):
   category to be shown. 
   """
     # curl -X GET http://127.0.0.1:5000/categories -H "Content-Type: application/json"  -d  '{"query" : { "category": "2" }}'
-    @app.route("/categories/<int:category_id>", methods=["GET"])
+    @app.route("/questions/<int:category_id>", methods=["GET"])
     def get_categories(category_id):
         body = request.get_json()
 
         try:
-            selection = Category.query.filter(Category.id == category_id).one_or_none
+
+            selection = Question.query.filter(
+                Question.category == str(category_id)
+            ).all()
 
             if selection is None:
                 abort(404)
 
-            # selection = Category.query.order_by(Category.id).all()
-            current_categories = paginate_categories(request, selection)
+            current_questions = paginate_questions(request, selection)
 
             return jsonify(
                 {
                     "success": True,
-                    "categories": current_categories,
+                    "categories": current_questions,
                     "total_categories": len(Category.query.all()),
                 }
             )
