@@ -29,8 +29,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          // categories: result.categories,
-          // currentCategory: result.current_category
+          
          })
         return;
       },
@@ -66,10 +65,8 @@ class QuestionView extends Component {
       success: (result) => {
         this.setState({
           categories: result.categories,
-          totalQuestions: result.total_questions
-          // questions: result.questions,
-          // totalQuestions: result.total_questions,
-          // currentCategory: result.current_category
+          totalQuestions: result.total_categories
+         
          })
         return;
       },
@@ -95,7 +92,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          // currentCategory: result.current_category 
+          
         })
         return;
       },
@@ -106,11 +103,11 @@ class QuestionView extends Component {
     })
   }
 
-  questionAction = (id) => (action) => {
+  questionAction = (question_id) => (action) => {
     if(action === 'DELETE') {
       if(window.confirm('are you sure you want to delete the question?')) {
         $.ajax({
-          url: `http://localhost:3000/questions/${id}`, //TODO: update request URL
+          url: `http://localhost:3000/questions/${question_id}`, //TODO: update request URL
           type: "DELETE",
           success: (result) => {
             this.getQuestions();
