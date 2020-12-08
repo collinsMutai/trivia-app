@@ -8,19 +8,6 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
-# categories
-def paginate_categories(request, selection):
-    page = request.args.get("page", 1, type=int)
-    start = (page - 1) * QUESTIONS_PER_PAGE
-    end = start + QUESTIONS_PER_PAGE
-
-    categories = [category.format() for category in selection]
-    current_categories = categories[start:end]
-
-    return current_categories
-
-    # questions
-
 
 #  INSERT INTO questions (question, answer, category, difficulty) VALUES ('QUIZ 1', 'ANSWER TO QUIZ 1', 'SCIENCE', '1');
 
@@ -63,19 +50,20 @@ def create_app(test_config=None):
   for all available categories.
   """
     # curl -X GET http://127.0.0.1:5000/categories?page=1000
-    @app.route("/categories")
+    @app.route("/categories", methods=["GET"])
     def retrieve_categories():
-        selection = Category.query.order_by(Category.id).all()
-        current_categories = paginate_categories(request, selection)
+        categories = Category.query.all()
 
-        if len(current_categories) == 0:
-            abort(404)
+        formatted_categories = {}
+
+        for category in categories:
+            formatted_categories[category.id] = category.type
 
         return jsonify(
             {
                 "success": True,
-                "categories": current_categories,
-                "total_categories": len(Category.query.all()),
+                "categories": formatted_categories,
+                "total_categories": len(categories),
             }
         )
 
@@ -93,7 +81,7 @@ def create_app(test_config=None):
   Clicking on the page numbers should update the questions. 
   """
     # curl -X GET http://127.0.0.1:5000/questions?page=1000
-    @app.route("/questions")
+    @app.route("/questions", methods=["GET"])
     def retrieve_questions():
         selection = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, selection)
@@ -101,11 +89,20 @@ def create_app(test_config=None):
         if len(current_questions) == 0:
             abort(404)
 
+        categories = Category.query.all()
+
+        formatted_categories = {}
+
+        for category in categories:
+            formatted_categories[category.id] = category.type
+
         return jsonify(
             {
                 "success": True,
                 "questions": current_questions,
                 "total_questions": len(Question.query.all()),
+                "current_category": None,
+                "categories": formatted_categories,
             }
         )
 
@@ -267,7 +264,7 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   """
 
-    @app.route("/quizzes", methods=["GET"])
+    @app.route("/quizzes", methods=["POST"])
     def play_quiz():
         body = request.get_json()
 
@@ -275,24 +272,34 @@ def create_app(test_config=None):
         quiz_category = body.get("quiz_category", None)
 
         try:
+            category_id = int(quiz_category["id"]) + 1
+
             if quiz_category:
+
                 if quiz_category["id"] == 0:
                     quiz = Question.query.all()
+
                 else:
-                    quiz = Question.query.filter_by(category=quiz_category["id"]).all()
+                    quiz = Question.query.filter_by(category=category_id).all()
+
             if not quiz:
                 return abort(422)
+
             selected = []
+
             for question in quiz:
                 if question.id not in previous_questions:
                     selected.append(question.format())
+
             if len(selected) != 0:
                 result = random.choice(selected)
                 return jsonify({"question": result})
+
             else:
                 return jsonify({"question": False})
+
         except:
-            abort(404)
+            abort(422)
 
     """
   @TODO: 

@@ -29,6 +29,8 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
+          categories: result.categories,
+          currentCategory: result.current_category
           
          })
         return;
@@ -64,8 +66,9 @@ class QuestionView extends Component {
       type: "GET",
       success: (result) => {
         this.setState({
-          categories: result.categories,
-          totalQuestions: result.total_categories
+         questions: result.questions,
+          totalQuestions: result.total_questions,
+          currentCategory: result.current_category
          
          })
         return;
@@ -92,7 +95,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          
+          currentCategory: result.current_category
         })
         return;
       },
