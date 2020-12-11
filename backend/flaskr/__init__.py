@@ -200,6 +200,10 @@ def create_app(test_config=None):
         search = body.get("search", None)
 
         try:
+
+            if search is None:
+                abort(404)
+
             selection = Question.query.order_by(Question.id).filter(
                 Question.category.ilike("%{}%".format(search))
             )
@@ -264,6 +268,7 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   """
 
+    # curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json"  -d '{"quiz_category": {"type": "science", "id": 11}, "previous_questions":[7]}'
     @app.route("/quizzes", methods=["POST"])
     def play_quiz():
         body = request.get_json()
@@ -272,7 +277,6 @@ def create_app(test_config=None):
         quiz_category = body.get("quiz_category", None)
 
         try:
-            category_id = int(quiz_category["id"]) + 1
 
             if quiz_category:
 
@@ -280,10 +284,12 @@ def create_app(test_config=None):
                     quiz = Question.query.all()
 
                 else:
-                    quiz = Question.query.filter_by(category=category_id).all()
+                    quiz = Question.query.filter_by(category=quiz_category["id"]).all()
 
-            if not quiz:
-                return abort(422)
+                print(quiz)
+
+                if not quiz:
+                    return abort(422)
 
             selected = []
 

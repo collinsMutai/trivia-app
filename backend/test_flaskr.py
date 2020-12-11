@@ -15,16 +15,25 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = "postgres://{}:{}@{}/{}".format(
+            "postgres", "7749", "localhost:5432", self.database_name
+        )
+
         setup_db(self.app, self.database_path)
 
+        self.new_question = {
+            "question": "Question 8",
+            "answer": "Answer to Question 8",
+            "category": "Science",
+            "difficulty": 2,
+        }
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+
     def tearDown(self):
         """Executed after reach test"""
         pass
@@ -32,7 +41,33 @@ class TriviaTestCase(unittest.TestCase):
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
+    
     """
+    #  questionsAPI
+    def test_paginated_questions(self):
+        res = self.client().get("/questions")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["questions"])
+        self.assertTrue(len(data["total_questions"]))
+
+    def test_404_sent_requesting_beyond_valid_page(self):
+        res = self.client().get("/questions?page=1000", json={"category": 1})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "Resource Not found")
+
+    # searchAPI
+
+    # def test_search_questions(self):
+    #     res = self.client().post("/search", json={"search": "title"})
+    #     data = json.loads(res.data)
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data["success"], True)
 
 
 # Make the tests conveniently executable
