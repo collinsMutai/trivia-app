@@ -52,18 +52,20 @@ def create_app(test_config=None):
     # curl -X GET http://127.0.0.1:5000/categories?page=1000
     @app.route("/categories", methods=["GET"])
     def retrieve_categories():
+        selection = Category.query.order_by(Category.id).all()
+
         categories = Category.query.all()
 
         formatted_categories = {}
 
-        for category in categories:
+        for category in selection:
             formatted_categories[category.id] = category.type
 
         return jsonify(
             {
                 "success": True,
                 "categories": formatted_categories,
-                "total_categories": len(categories),
+                "total_categories": len(selection),
             }
         )
 
@@ -101,7 +103,7 @@ def create_app(test_config=None):
                 "success": True,
                 "questions": current_questions,
                 "total_questions": len(Question.query.all()),
-                "current_category": None,
+                "current_category": formatted_categories[category.id],
                 "categories": formatted_categories,
             }
         )

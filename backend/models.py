@@ -28,7 +28,7 @@ def setup_db(app, database_path=database_path):
 Question
 
 """
-# INSERT INTO questions(question, answer, category, difficulty) VALUES('quiz 1', 'answer 1', 'science', '1');
+# INSERT INTO questions(question, answer, category, difficulty) VALUES('Rugby', 'Rugby answer', 'Sports', '2');
 
 
 class Question(db.Model):
