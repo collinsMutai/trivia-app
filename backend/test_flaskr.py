@@ -53,21 +53,31 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["questions"])
         self.assertTrue(data["total_questions"])
 
-    def test_404_sent_requesting_beyond_valid_page(self):
-        res = self.client().get("/questions?page=1000", json={"category": 1})
-        data = json.loads(res.data)
+    # def test_404_sent_requesting_beyond_valid_page(self):
+    #     res = self.client().get("/questions?page=1000", json={"category": 1})
+    #     data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "Resource Not found")
+    #     self.assertEqual(res.status_code, 404)
+    #     self.assertEqual(data["success"], False)
+    #     self.assertEqual(data["message"], "Resource Not found")
+
+    # # deleteAPI
+    # def test_delete_questions(self):
+    #     res = self.client().delete("/questions/23")
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data["success"], False)
+    #     self.assertTrue(data["deleted"], 23)
+    #     self.assertTrue(data["message"])
 
     # searchAPI
 
-    def test_search_questions(self):
-        res = self.client().post("/questions/search", json={"search": "title"})
-        data = json.loads(res.data)
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data["success"], True)
+    # def test_search_questions(self):
+    #     res = self.client().post("/questions/search", json={"search": "title"})
+    #     data = json.loads(res.data)
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data["success"], True)
 
 
 # Make the tests conveniently executable

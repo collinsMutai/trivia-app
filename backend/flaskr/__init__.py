@@ -119,26 +119,21 @@ def create_app(test_config=None):
     @app.route("/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
         try:
-            question = Question.query.filter(Question.id == question_id).one_or_none()
 
-            if question is None:
-                abort(404)
+            question = Question.query.get(question_id)
 
             question.delete()
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
 
             return jsonify(
                 {
                     "success": True,
-                    "deleted": question_id,
-                    "questions": current_questions,
-                    "total_questions": len(Question.query.all()),
+                    "deleted": question.id,
+                    "message": "Successfully deleted!",
                 }
             )
 
         except:
-            abort(422)
+            abort(404)
 
     """
   @TODO: 
@@ -199,24 +194,23 @@ def create_app(test_config=None):
     def search_question():
         body = request.get_json()
 
-        search = body.get("search", None)
+        search = body.get("search", "")
 
         try:
+            questions = Question.query.filter(
+                Question.question.ilike("%{}%".format(search))
+            ).all()
 
-            if search is None:
-                abort(404)
+            if not questions:
+                abort(422)
 
-            selection = Question.query.order_by(Question.id).filter(
-                Question.category.ilike("%{}%".format(search))
-            )
-
-            current_questions = paginate_questions(request, selection)
+            current_questions = paginate_questions(request, questions)
 
             return jsonify(
                 {
                     "success": True,
                     "questions": current_questions,
-                    "total_questions": len(Question.query.all()),
+                    "total_questions": len(current_questions),
                 }
             )
 
@@ -320,7 +314,7 @@ def create_app(test_config=None):
     @app.errorhandler(404)
     def not_found(error):
         return (
-            jsonify({"success": False, "error": 404, "message": "Resource Not found"}),
+            jsonify({"success": False, "error": 404, "message": "Resource Not Found"}),
             404,
         )
 
