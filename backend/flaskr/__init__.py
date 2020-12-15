@@ -1,3 +1,6 @@
+# ----------------------------------------------------------------------------#
+# Imports
+# ----------------------------------------------------------------------------#
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -9,7 +12,9 @@ from models import setup_db, Question, Category
 QUESTIONS_PER_PAGE = 10
 
 
-#  INSERT INTO questions (question, answer, category, difficulty) VALUES ('QUIZ 1', 'ANSWER TO QUIZ 1', 'SCIENCE', '1');
+# ----------------------------------------------------------------------------#
+# Questions Pagination.
+# ----------------------------------------------------------------------------#
 
 
 def paginate_questions(request, selection):
@@ -23,6 +28,11 @@ def paginate_questions(request, selection):
     return current_questions
 
 
+# ----------------------------------------------------------------------------#
+# App Config.
+# ----------------------------------------------------------------------------#
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -31,8 +41,10 @@ def create_app(test_config=None):
     """
   @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   """
-
+    # ----------------------------------------------------------------------------#
     # CORS Headers
+    # ----------------------------------------------------------------------------#
+
     @app.after_request
     def after_request(response):
         response.headers.add(
@@ -44,12 +56,15 @@ def create_app(test_config=None):
         return response
 
     """
-  
+
   @TODO: 
   Create an endpoint to handle GET requests 
   for all available categories.
   """
-    # curl -X GET http://127.0.0.1:5000/categories?page=1000
+    # ----------------------------------------------------------------------------#
+    # GET Categories.
+    # ----------------------------------------------------------------------------#
+
     @app.route("/categories", methods=["GET"])
     def retrieve_categories():
         selection = Category.query.order_by(Category.id).all()
@@ -58,7 +73,7 @@ def create_app(test_config=None):
 
         formatted_categories = {}
 
-        for category in selection:
+        for category in categories:
             formatted_categories[category.id] = category.type
 
         return jsonify(
@@ -82,7 +97,10 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   """
-    # curl -X GET http://127.0.0.1:5000/questions?page=1000
+    # ----------------------------------------------------------------------------#
+    # GET questions.
+    # ----------------------------------------------------------------------------#
+
     @app.route("/questions", methods=["GET"])
     def retrieve_questions():
         selection = Question.query.order_by(Question.id).all()
@@ -115,7 +133,10 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   """
-    # curl -X DELETE http://127.0.0.1:5000/questions/1
+    # ----------------------------------------------------------------------------#
+    # DELETE with question_id.
+    # ----------------------------------------------------------------------------#
+
     @app.route("/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
         try:
@@ -145,7 +166,10 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   """
-    # curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Question 3", "answer":"Answer to quiz 3", "category": "Tech", "difficulty":"3"}'
+    # ----------------------------------------------------------------------------#
+    # POST new question.
+    # ----------------------------------------------------------------------------#
+
     @app.route("/questions", methods=["POST"])
     def create_question():
         body = request.get_json()
@@ -189,7 +213,10 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   """
-    # curl http://localhost:5000/questions/search -X POST  -H "Content-Type: application/json"  -d '{"query" : { "category": "Tech" }}'
+    # ----------------------------------------------------------------------------#
+    # Search question with search term.
+    # ----------------------------------------------------------------------------#
+
     @app.route("/questions/search", methods=["POST"])
     def search_question():
         body = request.get_json()
@@ -225,10 +252,15 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   """
-    # curl -X GET http://127.0.0.1:5000/categories -H "Content-Type: application/json"  -d  '{"query" : { "category": "2" }}'
+    # ----------------------------------------------------------------------------#
+    # GET questions with category_id.
+    # ----------------------------------------------------------------------------#
+
+    # curl -X GET http://127.0.0.1:5000/questions/4 -H "Content-Type: application/json"  -d  '{"query" : { "category": "4" }}'
     @app.route("/questions/<int:category_id>", methods=["GET"])
     def get_categories(category_id):
         body = request.get_json()
+        category_id = body.get(category_id, None)
 
         try:
 
@@ -244,8 +276,8 @@ def create_app(test_config=None):
             return jsonify(
                 {
                     "success": True,
-                    "categories": current_questions,
-                    "total_categories": len(Category.query.all()),
+                    "categories": selection,
+                    "total_categories": len(current_questions),
                 }
             )
 
@@ -263,6 +295,9 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   """
+    # ----------------------------------------------------------------------------#
+    # POST random question within the given category.
+    # ----------------------------------------------------------------------------#
 
     # curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json"  -d '{"quiz_category": {"type": "science", "id": 11}, "previous_questions":[7]}'
     @app.route("/quizzes", methods=["POST"])
@@ -281,8 +316,6 @@ def create_app(test_config=None):
 
                 else:
                     quiz = Question.query.filter_by(category=quiz_category["id"]).all()
-
-                print(quiz)
 
                 if not quiz:
                     return abort(422)
@@ -307,9 +340,12 @@ def create_app(test_config=None):
   @TODO: 
   Create error handlers for all expected errors 
   including 404 and 422. 
-  
+
   """
-    # 404 Not found
+    # ----------------------------------------------------------------------------#
+    # 404: Resource Not found
+    # ----------------------------------------------------------------------------#
+
     # curl -X GET http://127.0.0.1:5000/questions?page=10
     @app.errorhandler(404)
     def not_found(error):
@@ -318,7 +354,9 @@ def create_app(test_config=None):
             404,
         )
 
-    # 422 Unprocessable
+    # ----------------------------------------------------------------------------#
+    # 422: Unprocessable
+    # ----------------------------------------------------------------------------#
 
     @app.errorhandler(422)
     def unprocessable(error):
@@ -327,13 +365,19 @@ def create_app(test_config=None):
             422,
         )
 
-    # 400 Bad Request
+    # ----------------------------------------------------------------------------#
+    # 400: Bad Request
+    # ----------------------------------------------------------------------------#
+
     # curl -X GET http://127.0.0.1:5000/categories/2
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({"success": False, "error": 400, "message": "Bad Request"}), 400
 
-    # 405 Method Not Allowed
+    # ----------------------------------------------------------------------------#
+    # 405: Method Not Allowed
+    # ----------------------------------------------------------------------------#
+
     # curl http://127.0.0.1:5000/questions/7 -X POST -H "Content-Type: application/json" -d '{"question":"Question 5", "answer":"Answer to quiz 5", "category": "Travel", "difficulty":"8"}'
     @app.errorhandler(405)
     def method_not_allowed(error):

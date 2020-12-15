@@ -92,26 +92,6 @@ GET '/categories'
 
 ```
 
-1. intro and for testing
-2. getting started/baseuRL
-3. error/ response codes, messages and error types
-4. Resource endpoint library
-
-   Organized by resource
-   Include each endpoint
-   Sample request
-   Arguments including data types
-   Response object including status codes and data types
-
-   error codes/ error types
-   categories
-   questions
-   questions by category_id
-   add questions
-   delete question_id
-   search question
-   endpoints / sample request / request body format
-
 # Api Reference
 
 ## Introdution
@@ -272,6 +252,22 @@ The API will return four error types when requests fail:
   "success": true,
   "total_questions": 3
   }
+
+### GET/questions/<int:category_id>
+
+- General:
+  - Return questions based on category and success value
+
+* Sample:
+
+### POST/quizzes
+
+- General:
+  - Take category and previous question parameters
+    and return a random questions within the given category,
+    if provided, and that is not one of the previous questions.
+
+* Sample:
 
 ## Testing
 
