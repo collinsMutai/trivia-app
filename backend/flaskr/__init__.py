@@ -155,6 +155,7 @@ def create_app(test_config=None):
 
         except:
             abort(404)
+            print(sys.exc_info())
 
     """
   @TODO: 
@@ -260,24 +261,22 @@ def create_app(test_config=None):
     @app.route("/questions/<int:category_id>", methods=["GET"])
     def get_categories(category_id):
         body = request.get_json()
-        category_id = body.get(category_id, None)
 
         try:
 
-            selection = Question.query.filter(
-                Question.category == str(category_id)
-            ).all()
+            questions = Question.query.filter(Question.category == str(category_id))
 
-            if selection is None:
+            if questions is None:
                 abort(404)
 
-            current_questions = paginate_questions(request, selection)
+            current_questions = paginate_questions(request, questions)
 
             return jsonify(
                 {
                     "success": True,
-                    "categories": selection,
-                    "total_categories": len(current_questions),
+                    "questions": current_questions,
+                    "total_questions": len(current_questions),
+                    "current_category": category_id,
                 }
             )
 
@@ -299,7 +298,7 @@ def create_app(test_config=None):
     # POST random question within the given category.
     # ----------------------------------------------------------------------------#
 
-    # curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json"  -d '{"quiz_category": {"type": "science", "id": 11}, "previous_questions":[7]}'
+    # curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json"  -d '{"quiz_category": {"type": "History", "id": 4}, "previous_questions":[3]}'
     @app.route("/quizzes", methods=["POST"])
     def play_quiz():
         body = request.get_json()
