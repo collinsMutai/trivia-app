@@ -71,6 +71,9 @@ def create_app(test_config=None):
 
         categories = Category.query.all()
 
+        if len(categories) == 0:
+            abort(404)
+
         formatted_categories = {}
 
         for category in categories:
@@ -103,28 +106,28 @@ def create_app(test_config=None):
 
     @app.route("/questions", methods=["GET"])
     def retrieve_questions():
-        selection = Question.query.order_by(Question.id).all()
-        current_questions = paginate_questions(request, selection)
+        try:
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
 
-        if len(current_questions) == 0:
+            categories = Category.query.all()
+
+            formatted_categories = {}
+
+            for category in categories:
+                formatted_categories[category.id] = category.type
+
+            return jsonify(
+                {
+                    "success": True,
+                    "questions": current_questions,
+                    "total_questions": len(Question.query.all()),
+                    "current_category": formatted_categories[category.id],
+                    "categories": formatted_categories,
+                }
+            )
+        except:
             abort(404)
-
-        categories = Category.query.all()
-
-        formatted_categories = {}
-
-        for category in categories:
-            formatted_categories[category.id] = category.type
-
-        return jsonify(
-            {
-                "success": True,
-                "questions": current_questions,
-                "total_questions": len(Question.query.all()),
-                "current_category": formatted_categories[category.id],
-                "categories": formatted_categories,
-            }
-        )
 
     """
   @TODO: 
@@ -155,7 +158,6 @@ def create_app(test_config=None):
 
         except:
             abort(404)
-            print(sys.exc_info())
 
     """
   @TODO: 
@@ -175,10 +177,10 @@ def create_app(test_config=None):
     def create_question():
         body = request.get_json()
 
-        new_question = body.get("question", None)
-        new_answer = body.get("answer", None)
-        new_category = body.get("category", None)
-        new_difficulty = body.get("difficulty", None)
+        new_question = request.json.get("question")
+        new_answer = request.json.get("answer")
+        new_difficulty = request.json.get("difficulty")
+        new_category = request.json.get("category")
 
         try:
             question = Question(
@@ -189,20 +191,21 @@ def create_app(test_config=None):
             )
             question.insert()
 
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
+            questions = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, questions)
 
             return jsonify(
                 {
                     "success": True,
                     "created": question.id,
+                    "message": "Successfully created",
                     "questions": current_questions,
                     "total_questions": len(Question.query.all()),
                 }
             )
 
         except:
-            abort(422)
+            abort(405)
 
     """
   @TODO: 
@@ -257,7 +260,6 @@ def create_app(test_config=None):
     # GET questions with category_id.
     # ----------------------------------------------------------------------------#
 
-    # curl -X GET http://127.0.0.1:5000/questions/4 -H "Content-Type: application/json"  -d  '{"query" : { "category": "4" }}'
     @app.route("/questions/<int:category_id>", methods=["GET"])
     def get_categories(category_id):
         body = request.get_json()
@@ -298,7 +300,6 @@ def create_app(test_config=None):
     # POST random question within the given category.
     # ----------------------------------------------------------------------------#
 
-    # curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json"  -d '{"quiz_category": {"type": "History", "id": 4}, "previous_questions":[3]}'
     @app.route("/quizzes", methods=["POST"])
     def play_quiz():
         body = request.get_json()

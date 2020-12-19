@@ -94,6 +94,34 @@ GET '/categories'
 
 # Api Reference
 
+## Install project dependencies
+
+- Install project dependencies by naviging to the `/backend` directory and running:
+
+```bash
+pip install -r requirements.txt
+```
+
+- This will install all of the packages specified in the `requirements.txt` file.
+
+## Database setup
+
+- With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
+
+```bash
+psql trivia < trivia.psql
+```
+
+## Start the project server
+
+- To run the server, navigate to `backend` directory and execute.
+
+```bash
+export FLASK_APP=flaskr
+export FLASK_ENV=development
+flask run
+```
+
 ## Introdution
 
 - The trivia app follows RESTful principles, including naming of endpoints, use of HTTP methods GET , POST, and DELETE. The project handles errors using unittest library to test each endpoint for expected behaviour and error handling if applicable.
@@ -191,7 +219,7 @@ The API will return four error types when requests fail:
 - General:
   - Creates a new question using the submitted . Returns the id of the created question, tital questions, and question list based on the current page number to update the frontend.
 
-* Sample: curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"History Question 25", "answer":"Answer to quiz 25", "category": "History", "difficulty":"2"}'
+* Sample: curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"History Question 28", "answer":"Answer to quiz 27", "category": "History", "difficulty":"2"}'
   "created": 25,
   "questions": [
   {
@@ -258,7 +286,36 @@ The API will return four error types when requests fail:
 - General:
   - Return questions based on category and success value
 
-* Sample:
+* Sample: curl -X GET http://127.0.0.1:5000/questions/4 -H "Content-Type: application/json" -d '{"query" : { "category": "4" }}'
+  "categories": {
+  "1": "science",
+  "2": "Tech",
+  "3": "Sports",
+  "4": "History",
+  "5": "Entertainment",
+  "6": "Geography",
+  "7": "Art"
+  },
+  "current_category": "Art",
+  "questions": [
+  {
+  "answer": "Rugby answer",
+  "category": "Sports",
+  "difficulty": 2,
+  "id": 22,
+  "question": "Rugby"
+  },
+  {
+  "answer": "History answer",
+  "category": "History",
+  "difficulty": 2,
+  "id": 23,
+  "question": "History"
+  }
+  ],
+  "success": true,
+  "total_questions": 2
+  }
 
 ### POST/quizzes
 
@@ -267,7 +324,14 @@ The API will return four error types when requests fail:
     and return a random questions within the given category,
     if provided, and that is not one of the previous questions.
 
-* Sample:
+* Sample: curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json" -d '{"quiz_category": {"type": "History", "id": 4}, "previous_questions":[3]}'
+  {
+  'id': 1,
+  'question': what is H20,
+  'answer': water,
+  'category': 3,
+  'difficulty': 5
+  }
 
 ## Testing
 
