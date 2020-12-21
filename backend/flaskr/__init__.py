@@ -107,8 +107,11 @@ def create_app(test_config=None):
     @app.route("/questions", methods=["GET"])
     def retrieve_questions():
         try:
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
+            questions = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, questions)
+
+            if len(current_questions) == 0:
+                abort(404)
 
             categories = Category.query.all()
 
@@ -126,6 +129,7 @@ def create_app(test_config=None):
                     "categories": formatted_categories,
                 }
             )
+
         except:
             abort(404)
 
@@ -144,20 +148,29 @@ def create_app(test_config=None):
     def delete_question(question_id):
         try:
 
-            question = Question.query.get(question_id)
+            # question = Question.query.get(question_id)
+            question = Question.query.filter(Question.id == question_id).one_or_none()
+
+            if question is None:
+                abort(404)
 
             question.delete()
+
+            questions = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, questions)
 
             return jsonify(
                 {
                     "success": True,
                     "deleted": question.id,
                     "message": "Successfully deleted!",
+                    "questions": current_questions,
+                    "total_questions": len(Question.query.all()),
                 }
             )
 
         except:
-            abort(404)
+            abort(422)
 
     """
   @TODO: 
