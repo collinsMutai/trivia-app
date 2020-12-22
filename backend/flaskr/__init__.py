@@ -238,7 +238,7 @@ def create_app(test_config=None):
     def search_question():
         body = request.get_json()
 
-        search = body.get("search", "")
+        search = body.get("searchTerm", "")
 
         try:
             questions = Question.query.filter(
@@ -246,7 +246,7 @@ def create_app(test_config=None):
             ).all()
 
             if not questions:
-                abort(422)
+                abort(404)
 
             current_questions = paginate_questions(request, questions)
 
@@ -259,7 +259,7 @@ def create_app(test_config=None):
             )
 
         except:
-            abort(422)
+            abort(404)
 
     """
   @TODO: 
@@ -279,7 +279,9 @@ def create_app(test_config=None):
 
         try:
 
-            questions = Question.query.filter(Question.category == str(category_id))
+            questions = Question.query.filter(
+                Question.category == str(category_id)
+            ).all()
 
             if questions is None:
                 abort(404)

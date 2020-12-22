@@ -155,16 +155,15 @@ The API will return four error types when requests fail:
   - Returns categories object, success value, and total number of categories
 - Sample: curl -X GET http://127.0.0.1:5000/categories
   "categories": {
-  "1": "science",
-  "2": "Tech",
-  "3": "Sports",
+  "1": "Science",
+  "2": "Art",
+  "3": "Geography",
   "4": "History",
   "5": "Entertainment",
-  "6": "Geography",
-  "7": "Art"
+  "6": "Sports"
   },
   "success": true,
-  "total_categories": 7
+  "total_categories": 6
   }
 
 ### GET/questions
@@ -174,33 +173,88 @@ The API will return four error types when requests fail:
   * Results are paginated in groups of 10. Include a request argument to choose a page number, starting from 1
 - Sample: curl -X GET http://127.0.0.1:5000/questions
   "categories": {
-  "1": "science",
-  "2": "Tech",
-  "3": "Sports",
+  "1": "Science",
+  "2": "Art",
+  "3": "Geography",
   "4": "History",
   "5": "Entertainment",
-  "6": "Geography",
-  "7": "Art"
+  "6": "Sports"
   },
-  "current_category": "Art",
+  "current_category": "Sports",
   "questions": [
   {
-  "answer": "Rugby answer",
-  "category": "Sports",
-  "difficulty": 2,
-  "id": 22,
-  "question": "Rugby"
+  "answer": "Apollo 13",
+  "category": 5,
+  "difficulty": 4,
+  "id": 2,
+  "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
   },
   {
-  "answer": "History answer",
-  "category": "History",
+  "answer": "Tom Cruise",
+  "category": 5,
+  "difficulty": 4,
+  "id": 4,
+  "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+  },
+  {
+  "answer": "Maya Angelou",
+  "category": 4,
   "difficulty": 2,
-  "id": 23,
-  "question": "History"
+  "id": 5,
+  "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+  },
+  {
+  "answer": "Edward Scissorhands",
+  "category": 5,
+  "difficulty": 3,
+  "id": 6,
+  "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+  },
+  {
+  "answer": "Muhammad Ali",
+  "category": 4,
+  "difficulty": 1,
+  "id": 9,
+  "question": "What boxer's original name is Cassius Clay?"
+  },
+  {
+  "answer": "Brazil",
+  "category": 6,
+  "difficulty": 3,
+  "id": 10,
+  "question": "Which is the only team to play in every soccer World Cup tournament?"
+  },
+  {
+  "answer": "Uruguay",
+  "category": 6,
+  "difficulty": 4,
+  "id": 11,
+  "question": "Which country won the first ever soccer World Cup in 1930?"
+  },
+  {
+  "answer": "George Washington Carver",
+  "category": 4,
+  "difficulty": 2,
+  "id": 12,
+  "question": "Who invented Peanut Butter?"
+  },
+  {
+  "answer": "Lake Victoria",
+  "category": 3,
+  "difficulty": 2,
+  "id": 13,
+  "question": "What is the largest lake in Africa?"
+  },
+  {
+  "answer": "The Palace of Versailles",
+  "category": 3,
+  "difficulty": 3,
+  "id": 14,
+  "question": "In which royal palace would you find the Hall of Mirrors?"
   }
   ],
   "success": true,
-  "total_questions": 2
+  "total_questions": 19
   }
 
 ### DELETE/questions/<int:question_id>
@@ -208,10 +262,82 @@ The API will return four error types when requests fail:
 - General:
   - Deletes a question based on question_id and returns id of deleted question, success message and value
 - Sample: curl -X DELETE http://127.0.0.1:5000/questions/23
-  {
-  "deleted": 23,
+  "deleted": 24,
   "message": "Successfully deleted!",
-  "success": true
+  "questions": [
+  {
+  "answer": "Apollo 13",
+  "category": 5,
+  "difficulty": 4,
+  "id": 2,
+  "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+  },
+  {
+  "answer": "Tom Cruise",
+  "category": 5,
+  "difficulty": 4,
+  "id": 4,
+  "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+  },
+  {
+  "answer": "Maya Angelou",
+  "category": 4,
+  "difficulty": 2,
+  "id": 5,
+  "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+  },
+  {
+  "answer": "Edward Scissorhands",
+  "category": 5,
+  "difficulty": 3,
+  "id": 6,
+  "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+  },
+  {
+  "answer": "Muhammad Ali",
+  "category": 4,
+  "difficulty": 1,
+  "id": 9,
+  "question": "What boxer's original name is Cassius Clay?"
+  },
+  {
+  "answer": "Brazil",
+  "category": 6,
+  "difficulty": 3,
+  "id": 10,
+  "question": "Which is the only team to play in every soccer World Cup tournament?"
+  },
+  {
+  "answer": "Uruguay",
+  "category": 6,
+  "difficulty": 4,
+  "id": 11,
+  "question": "Which country won the first ever soccer World Cup in 1930?"
+  },
+  {
+  "answer": "George Washington Carver",
+  "category": 4,
+  "difficulty": 2,
+  "id": 12,
+  "question": "Who invented Peanut Butter?"
+  },
+  {
+  "answer": "Lake Victoria",
+  "category": 3,
+  "difficulty": 2,
+  "id": 13,
+  "question": "What is the largest lake in Africa?"
+  },
+  {
+  "answer": "The Palace of Versailles",
+  "category": 3,
+  "difficulty": 3,
+  "id": 14,
+  "question": "In which royal palace would you find the Hall of Mirrors?"
+  }
+  ],
+  "success": true,
+  "total_questions": 19
   }
 
 ### POST/questions
@@ -219,7 +345,7 @@ The API will return four error types when requests fail:
 - General:
   - Creates a new question using the submitted . Returns the id of the created question, tital questions, and question list based on the current page number to update the frontend.
 
-* Sample: curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"History Question 28", "answer":"Answer to quiz 27", "category": "History", "difficulty":"2"}'
+* Sample: curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Which was the worst year?", "answer":"2020", "difficulty":"2", "category": "4"}'
   "created": 25,
   "questions": [
   {
@@ -246,6 +372,82 @@ The API will return four error types when requests fail:
   ],
   "success": true,
   "total_questions": 3
+  } "created": 25,
+  "message": "Successfully created",
+  "questions": [
+  {
+  "answer": "Apollo 13",
+  "category": 5,
+  "difficulty": 4,
+  "id": 2,
+  "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+  },
+  {
+  "answer": "Tom Cruise",
+  "category": 5,
+  "difficulty": 4,
+  "id": 4,
+  "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+  },
+  {
+  "answer": "Maya Angelou",
+  "category": 4,
+  "difficulty": 2,
+  "id": 5,
+  "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+  },
+  {
+  "answer": "Edward Scissorhands",
+  "category": 5,
+  "difficulty": 3,
+  "id": 6,
+  "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+  },
+  {
+  "answer": "Muhammad Ali",
+  "category": 4,
+  "difficulty": 1,
+  "id": 9,
+  "question": "What boxer's original name is Cassius Clay?"
+  },
+  {
+  "answer": "Brazil",
+  "category": 6,
+  "difficulty": 3,
+  "id": 10,
+  "question": "Which is the only team to play in every soccer World Cup tournament?"
+  },
+  {
+  "answer": "Uruguay",
+  "category": 6,
+  "difficulty": 4,
+  "id": 11,
+  "question": "Which country won the first ever soccer World Cup in 1930?"
+  },
+  {
+  "answer": "George Washington Carver",
+  "category": 4,
+  "difficulty": 2,
+  "id": 12,
+  "question": "Who invented Peanut Butter?"
+  },
+  {
+  "answer": "Lake Victoria",
+  "category": 3,
+  "difficulty": 2,
+  "id": 13,
+  "question": "What is the largest lake in Africa?"
+  },
+  {
+  "answer": "The Palace of Versailles",
+  "category": 3,
+  "difficulty": 3,
+  "id": 14,
+  "question": "In which royal palace would you find the Hall of Mirrors?"
+  }
+  ],
+  "success": true,
+  "total_questions": 20
   }
 
 ### POST/questions/search
@@ -256,29 +458,78 @@ The API will return four error types when requests fail:
 * Sample: curl http://localhost:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"query" : { "category": "History" }}'
   "questions": [
   {
-  "answer": "Rugby answer",
-  "category": "Sports",
+  "answer": "Maya Angelou",
+  "category": 4,
   "difficulty": 2,
-  "id": 22,
-  "question": "Rugby"
+  "id": 5,
+  "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
   },
   {
-  "answer": "Answer to quiz 24",
-  "category": "History",
-  "difficulty": 2,
-  "id": 24,
-  "question": "History Question 24"
+  "answer": "Muhammad Ali",
+  "category": 4,
+  "difficulty": 1,
+  "id": 9,
+  "question": "What boxer's original name is Cassius Clay?"
   },
   {
-  "answer": "Answer to quiz 25",
-  "category": "History",
+  "answer": "Apollo 13",
+  "category": 5,
+  "difficulty": 4,
+  "id": 2,
+  "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+  },
+  {
+  "answer": "Tom Cruise",
+  "category": 5,
+  "difficulty": 4,
+  "id": 4,
+  "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+  },
+  {
+  "answer": "Edward Scissorhands",
+  "category": 5,
+  "difficulty": 3,
+  "id": 6,
+  "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+  },
+  {
+  "answer": "Brazil",
+  "category": 6,
+  "difficulty": 3,
+  "id": 10,
+  "question": "Which is the only team to play in every soccer World Cup tournament?"
+  },
+  {
+  "answer": "Uruguay",
+  "category": 6,
+  "difficulty": 4,
+  "id": 11,
+  "question": "Which country won the first ever soccer World Cup in 1930?"
+  },
+  {
+  "answer": "George Washington Carver",
+  "category": 4,
   "difficulty": 2,
-  "id": 25,
-  "question": "History Question 25"
+  "id": 12,
+  "question": "Who invented Peanut Butter?"
+  },
+  {
+  "answer": "Lake Victoria",
+  "category": 3,
+  "difficulty": 2,
+  "id": 13,
+  "question": "What is the largest lake in Africa?"
+  },
+  {
+  "answer": "The Palace of Versailles",
+  "category": 3,
+  "difficulty": 3,
+  "id": 14,
+  "question": "In which royal palace would you find the Hall of Mirrors?"
   }
   ],
   "success": true,
-  "total_questions": 3
+  "total_questions": 10
   }
 
 ### GET/questions/<int:category_id>
@@ -287,34 +538,46 @@ The API will return four error types when requests fail:
   - Return questions based on category and success value
 
 * Sample: curl -X GET http://127.0.0.1:5000/questions/4 -H "Content-Type: application/json" -d '{"query" : { "category": "4" }}'
-  "categories": {
-  "1": "science",
-  "2": "Tech",
-  "3": "Sports",
-  "4": "History",
-  "5": "Entertainment",
-  "6": "Geography",
-  "7": "Art"
-  },
-  "current_category": "Art",
+  "current_category": 4,
   "questions": [
   {
-  "answer": "Rugby answer",
-  "category": "Sports",
+  "answer": "Maya Angelou",
+  "category": 4,
   "difficulty": 2,
-  "id": 22,
-  "question": "Rugby"
+  "id": 5,
+  "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
   },
   {
-  "answer": "History answer",
-  "category": "History",
+  "answer": "Muhammad Ali",
+  "category": 4,
+  "difficulty": 1,
+  "id": 9,
+  "question": "What boxer's original name is Cassius Clay?"
+  },
+  {
+  "answer": "George Washington Carver",
+  "category": 4,
   "difficulty": 2,
+  "id": 12,
+  "question": "Who invented Peanut Butter?"
+  },
+  {
+  "answer": "Scarab",
+  "category": 4,
+  "difficulty": 4,
   "id": 23,
-  "question": "History"
+  "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+  },
+  {
+  "answer": "2020",
+  "category": 4,
+  "difficulty": 1,
+  "id": 24,
+  "question": "Which year was the worst?"
   }
   ],
   "success": true,
-  "total_questions": 2
+  "total_questions": 5
   }
 
 ### POST/quizzes
@@ -324,13 +587,14 @@ The API will return four error types when requests fail:
     and return a random questions within the given category,
     if provided, and that is not one of the previous questions.
 
-* Sample: curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json" -d '{"quiz_category": {"type": "History", "id": 4}, "previous_questions":[3]}'
-  {
-  'id': 1,
-  'question': what is H20,
-  'answer': water,
-  'category': 3,
-  'difficulty': 5
+* Sample: curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json" -d '{"quiz_category": {"type": "History", "id": 4}, "previous_questions":[2]}'
+  "question": {
+  "answer": "Scarab",
+  "category": 4,
+  "difficulty": 4,
+  "id": 23,
+  "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+  }
   }
 
 ## Testing
