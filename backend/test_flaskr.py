@@ -142,31 +142,38 @@ class TriviaTestCase(unittest.TestCase):
     # # GET questions with category_id.
 
     # def test_questions_with_category_id(self):
-    #     res = self.client().get("questions/1")
+    #     res = self.client().get("questions?category=2")
     #     data = json.loads(res.data)
 
     #     self.assertEqual(res.status_code, 200)
     #     self.assertEqual(data["success"], True)
-    #     self.assertTrue(data["current_category"], 1)
+    #     self.assertTrue(data["current_category"], 2)
 
-    def test_questions_with_category_id_not_found(self):
-        res = self.client().get("/questions/100")
-        data = json.loads(res.data)
+    # def test_questions_with_category_id_not_found(self):
+    #     res = self.client().get("/questions/100")
+    #     data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "Bad Request")
-        self.assertTrue(data["current_category"], 100)
+    #     self.assertEqual(res.status_code, 404)
+    #     self.assertEqual(data["success"], False)
+    #     self.assertEqual(data["message"], "Resource Not Found")
 
     # # POST random question within the given category.
 
-    # def test_play_quiz(self):
-    #     res = self.client().post("/quizzes")
-    #     data = json.loads(res.data)
+    def test_play_quiz(self):
+        res = self.client().post(
+            "/quizzes",
+            json={
+                "previous_questions": ["3"],
+                "quiz_category": {"type": "History", "id": 3},
+            },
+        )
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data["success"], True)
-    #     self.assertTrue(data["question"])
+        quiz = Question.query.filter(Question.category == 3).all()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        # self.assertTrue(data["question"])
 
     # def test_play_quiz_if_not_quiz(self):
     #     res = self.client().get("/quizzes")

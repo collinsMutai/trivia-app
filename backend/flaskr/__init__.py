@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------#
 # Imports
 # ----------------------------------------------------------------------------#
-import os
+import os, sys
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -148,7 +148,6 @@ def create_app(test_config=None):
     def delete_question(question_id):
         try:
 
-            # question = Question.query.get(question_id)
             question = Question.query.filter(Question.id == question_id).one_or_none()
 
             if question is None:
@@ -279,14 +278,12 @@ def create_app(test_config=None):
 
         try:
 
-            questions = Question.query.filter(
-                Question.category == str(category_id)
-            ).all()
-
-            if questions is None:
-                abort(404)
+            questions = Question.query.filter(Question.category == str(category_id))
 
             current_questions = paginate_questions(request, questions)
+
+            if len(current_questions) == 0:
+                abort(404)
 
             return jsonify(
                 {
@@ -298,7 +295,7 @@ def create_app(test_config=None):
             )
 
         except:
-            abort(400)
+            abort(404)
 
     """
   @TODO: 
@@ -334,6 +331,7 @@ def create_app(test_config=None):
 
                 if not quiz:
                     return abort(422)
+                print(quiz)
 
             selected = []
 
@@ -343,13 +341,14 @@ def create_app(test_config=None):
 
             if len(selected) != 0:
                 result = random.choice(selected)
-                return jsonify({"question": result})
+                return jsonify({"success": True, "question": result})
 
             else:
                 return jsonify({"question": False})
 
         except:
             abort(422)
+            print(sys.exc_info())
 
     """
   @TODO: 
@@ -361,7 +360,6 @@ def create_app(test_config=None):
     # 404: Resource Not found
     # ----------------------------------------------------------------------------#
 
-    # curl -X GET http://127.0.0.1:5000/questions?page=10
     @app.errorhandler(404)
     def not_found(error):
         return (
@@ -384,7 +382,6 @@ def create_app(test_config=None):
     # 400: Bad Request
     # ----------------------------------------------------------------------------#
 
-    # curl -X GET http://127.0.0.1:5000/categories/2
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({"success": False, "error": 400, "message": "Bad Request"}), 400
@@ -393,7 +390,6 @@ def create_app(test_config=None):
     # 405: Method Not Allowed
     # ----------------------------------------------------------------------------#
 
-    # curl http://127.0.0.1:5000/questions/7 -X POST -H "Content-Type: application/json" -d '{"question":"Question 5", "answer":"Answer to quiz 5", "category": "Travel", "difficulty":"8"}'
     @app.errorhandler(405)
     def method_not_allowed(error):
         return (
