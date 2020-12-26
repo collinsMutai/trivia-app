@@ -122,6 +122,9 @@ COPY public.categories (id, type) FROM stdin;
 --
 -- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: caryn
 --
+-- INSERT INTO categories (id, type) VALUES ('1', 'Science');
+-- INSERT INTO questions (id, question, answer, difficulty, category) VALUES ('1', 'Whose autobiography is entitled "I Know Why the Caged Bird Sings"?','Maya Angelou','2', '1');
+-- INSERT INTO questions (id, question, answer, difficulty, category) VALUES ('2', 'What boxer"s original name is Cassius Clay"?','Muhammad Ali','2', '1');
 
 COPY public.questions (id, question, answer, difficulty, category) FROM stdin;
 5	Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?	Maya Angelou	2	4
